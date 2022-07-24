@@ -3,4 +3,4 @@
   command = "npm run build"
   functions = "netlify/functions
   " #  netlify-lambda reads this
-  publish = "build"
+  publish = "netlify"
