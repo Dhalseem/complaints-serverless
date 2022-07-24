@@ -60,7 +60,7 @@ exports.handler = async function (event, context) {
 
             var mailOptions = {
                 from: 'avithemad@gmail.com',
-                to: 'avithemad@gmail.com',
+                to: 'avithemad@gmail.com, jayakar456@gmail.com',
                 subject: `Sail grievance: New complaint added${payload?.complaineeName ? ' by ' + payload?.complaineeName : ''}.`,
                 text: 'A new complaint was added. Visit https://sail-grievances.netlify.app/complaints to review.'
             };
