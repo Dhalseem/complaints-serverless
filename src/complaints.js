@@ -1,4 +1,19 @@
 exports.handler = async function (event, context) {
+
+    const headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'GET, POST'
+    };
+
+    if (event.httpMethod === 'OPTIONS') {
+        // To enable CORS
+        return {
+            statusCode: 200, // <-- Important!
+            headers,
+            body: 'This was not a POST request!'
+        };
+    }
     const { google } = require("googleapis");
     const nodemailer = require("nodemailer");
 
@@ -12,6 +27,7 @@ exports.handler = async function (event, context) {
         case "GET":
             const getRows = await sheets.spreadsheets.values.get({
                 auth, spreadsheetId,
+                headers,
                 range: "Complaints",
             });
             return {
@@ -27,7 +43,7 @@ exports.handler = async function (event, context) {
                 newRow.push(value);
             }
             console.log('new Row ', newRow);
-            await sheets.spreadsheets.values.append({
+            response = await sheets.spreadsheets.values.append({
                 auth,
                 spreadsheetId,
                 range: "Complaints",
@@ -58,10 +74,16 @@ exports.handler = async function (event, context) {
             });
             return {
                 statusCode: 201,
-                body: "Value added successfully"
+                headers,
+                body: JSON.stringify({ response: response })
             }
 
         default:
+            return {
+                statusCode: 200,
+                headers,
+                body: "Method is not known to the server"
+            }
             break;
     }
 
