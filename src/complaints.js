@@ -1,6 +1,9 @@
 exports.handler = async function (event, context) {
     const { google } = require("googleapis");
+    const nodemailer = require("nodemailer");
+
     const { sheets, spreadsheetId, auth } = await getSheets(google);
+
 
     console.log('event: ', event);
     console.log('context: ', context);
@@ -24,13 +27,35 @@ exports.handler = async function (event, context) {
                 newRow.push(value);
             }
             console.log('new Row ', newRow);
-            const response = await sheets.spreadsheets.values.append({
+            await sheets.spreadsheets.values.append({
                 auth,
                 spreadsheetId,
                 range: "Complaints",
                 valueInputOption: "USER_ENTERED",
                 resource: { values: [newRow] }
-            })
+            });
+            var transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: 'avithemad@gmail.com',
+                    pass: 'gwdegupxutbqaddo'
+                }
+            });
+
+            var mailOptions = {
+                from: 'avithemad@gmail.com',
+                to: 'avithemad@gmail.com',
+                subject: `Sail grievance: New complaint added${payload?.complaineeName ? ' by ' + payload?.complaineeName : ''}.`,
+                text: 'A new complaint was added. Visit https://sail-grievances.netlify.app/complaints to review.'
+            };
+
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
             return {
                 statusCode: 201,
                 body: "Value added successfully"
