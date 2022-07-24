@@ -1,7 +1,6 @@
-const { google } = require("googleapis");
-
 exports.handler = async function (event, context) {
-    const { sheets, spreadsheetId, auth } = await getSheets();
+    const { google } = require("googleapis");
+    const { sheets, spreadsheetId, auth } = await getSheets(google);
 
     // read rows from spreadsheet
     const getRows = await sheets.spreadsheets.values.get({
@@ -14,7 +13,7 @@ exports.handler = async function (event, context) {
     };
 }
 
-const getSheets = async () => {
+const getSheets = async (google) => {
     const auth = new google.auth.GoogleAuth({
         keyFile: "credentials.json",
         scopes: "https://www.googleapis.com/auth/spreadsheets",
