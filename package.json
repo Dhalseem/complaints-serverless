@@ -16,6 +16,7 @@
     "netlify-lambda": "^2.0.15"
   },
   "dependencies": {
+    "encoding": "^0.1.13",
     "googleapis": "^105.0.0"
   }
 }
