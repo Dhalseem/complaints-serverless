@@ -2,15 +2,46 @@ exports.handler = async function (event, context) {
     const { google } = require("googleapis");
     const { sheets, spreadsheetId, auth } = await getSheets(google);
 
+    console.log('event: ', event);
+    console.log('context: ', context);
+
+    switch (event.httpMethod) {
+        case "GET":
+            const getRows = await sheets.spreadsheets.values.get({
+                auth, spreadsheetId,
+                range: "Complaints",
+            });
+            return {
+                statusCode: 200,
+                body: JSON.stringify(getRows.data.values),
+            };
+
+        case "POST":
+            const payload = JSON.parse(event.body);
+            console.log("Payload: ", payload);
+            const newRow = [];
+            for (const [key, value] of Object.entries(payload)) {
+                newRow.push(value);
+            }
+            console.log('new Row ', newRow);
+            const response = await sheets.spreadsheets.values.append({
+                auth,
+                spreadsheetId,
+                range: "Complaints",
+                valueInputOption: "USER_ENTERED",
+                resource: { values: [newRow] }
+            })
+            return {
+                statusCode: 201,
+                body: "Value added successfully"
+            }
+
+        default:
+            break;
+    }
+
     // read rows from spreadsheet
-    const getRows = await sheets.spreadsheets.values.get({
-        auth, spreadsheetId,
-        range: "Complaints",
-    });
-    return {
-        statusCode: 200,
-        body: JSON.stringify(getRows.data.values),
-    };
+
 }
 
 const getSheets = async (google) => {

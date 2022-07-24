@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sail grievances Api</title>
+  </head>
+  <body>
+    <h1>Endpoints to manage sail grievances app.</h1>
+
+    <p>
+      Please note, the intended purpose of these endpoints is to be used by the
+      application only.
+    </p>
+
+    <h2>Complaints endpoint</h2>
+    <ul>
+      <li>
+        GET:
+        <a href="/.netlify/functions/complaints"
+          >/.netlify/functions/complaints</a
+        >
+      </li>
+      <li>
+        POST:
+        <a href="/.netlify/functions/complaints"
+          >/.netlify/functions/complaints</a
+        ><br />Body: <br />
+        <code>
+          { timestamp: Date; email: string; fromSail: string; staffNumber:
+          string; complaineeName: string; department: string; contactNumber:
+          string; quarterType: string; blockNumber: string; unitNumber: string;
+          newAllotment: string; quarterNumber: string; workNature: string;
+          complaintDetails: string; status: string; pendingDays: string;
+          attendingWorkId: string; contract: string; jobCardNumber: string;
+          attendPeriodFrom: string; attendPeriodTo: string; remarks: string; }
+        </code>
+      </li>
+    </ul>
+  </body>
+</html>
