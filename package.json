@@ -14,5 +14,8 @@
   "license": "ISC",
   "devDependencies": {
     "netlify-lambda": "^2.0.15"
+  },
+  "dependencies": {
+    "googleapis": "^105.0.0"
   }
 }
