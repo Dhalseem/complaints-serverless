@@ -1,22 +1,29 @@
-const getSheets = require("./complaints").getSheets;
-const { google } = require("googleapis");
 const jwt = require("jsonwebtoken");
 
-const bcrypt = require("bcrypt");
+const getSheetOnly = require('../helper').getSheetOnly;
+const { constants } = require('../constants')
 const headers = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Allow-Methods": "GET, POST",
+    "content-type": "application/json",
 };
+const bcrypt = require("bcrypt");
 exports.handler = async function (event, context) {
     try {
+        if (event.httpMethod == "OPTIONS") {
+            return {
+                statusCode: 200,
+                headers
+            }
+        }
         if (event.httpMethod == "POST") {
             const { username, password } = JSON.parse(event.body);
-            const { sheets, spreadsheetId, auth } = await getSheets(google);
+            const { sheets, auth } = await getSheetOnly();
             const getRows = await sheets.spreadsheets.values.get({
                 auth,
-                spreadsheetId,
-                range: "Users",
+                spreadsheetId: constants.USERS_SHEET_ID,
+                range: constants.USERS_SHEET_NAME,
             });
             const usersArray = getRows.data.values;
             usersArray.shift();
@@ -47,12 +54,13 @@ exports.handler = async function (event, context) {
                     department: userExist[7],
                     grant: userExist[8],
                 },
-                "something",
+                "e8b87623-c9df-4609-a5d2-463c7efe4058",
                 { expiresIn: "2h" }
             );
 
             return {
                 statusCode: 200,
+                headers,
                 body: JSON.stringify({ message: "Logon success", token }),
             };
         }

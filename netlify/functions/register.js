@@ -1,8 +1,9 @@
-const getSheets = require('./complaints').getSheets;
-const { google } = require("googleapis");
-const jwt = require('jsonwebtoken');
 
+const getSheetOnly = require('../helper').getSheetOnly;
+const jwt = require('jsonwebtoken');
+const validateToken = require('../helper').validateToken;
 const bcrypt = require('bcrypt');
+const { constants } = require('../constants');
 
 const headers = {
     "Access-Control-Allow-Origin": "*",
@@ -36,8 +37,8 @@ exports.handler = async function (event, context) {
             const { sheets, auth } = await getSheetOnly();
             const getRows = await sheets.spreadsheets.values.get({
                 auth,
-                spreadsheetId,
-                range: "Users",
+                spreadsheetId: constants.USERS_SHEET_ID,
+                range: constants.USERS_SHEET_NAME,
             });
             const usersArray = getRows.data.values;
             usersArray.shift();
@@ -57,8 +58,8 @@ exports.handler = async function (event, context) {
             const newRow = [username, hashPassword, salt, email, fullName, contactNumber, organization, department, grant];
             await sheets.spreadsheets.values.append({
                 auth,
-                spreadsheetId,
-                range: "Users",
+                spreadsheetId: constants.USERS_SHEET_ID,
+                range: constants.USERS_SHEET_NAME,
                 valueInputOption: "USER_ENTERED",
                 resource: { values: [newRow] }
             });
@@ -81,5 +82,4 @@ exports.handler = async function (event, context) {
     }
 
 };
-
 

@@ -1,0 +1,6 @@
+exports.constants = {
+    GRIEVANCES_SHEET_ID: '1QKWnUq_fZpdRZAYBNjkNDzyuUCtQqR0s7eDIF7LJ1GA',
+    GRIEVANCES_SHEET_NAME: 'Complaints',
+    USERS_SHEET_ID: '1RxpgwX2V5JtIBEAiwn2a46pzTJORR9HGJtGFvDMTCoA',
+    USERS_SHEET_NAME: 'Users'
+}
