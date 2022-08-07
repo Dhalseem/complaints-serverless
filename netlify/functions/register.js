@@ -1,14 +1,26 @@
-const jwt = require('jsonwebtoken');
 
 const getSheetOnly = require('../helper').getSheetOnly;
+const jwt = require('jsonwebtoken');
+const validateToken = require('../helper').validateToken;
+const bcrypt = require('bcrypt');
 const { constants } = require('../constants');
 
-const validateToken = require('../helper').validateToken;
-
-const bcrypt = require('bcrypt');
+const headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "content-type": "application/json",
+};
 exports.handler = async function (event, context) {
 
     try {
+        console.log(event)
+        if (event.httpMethod == "OPTIONS") {
+            return {
+                statusCode: 200,
+                headers
+            }
+        }
         if (event.httpMethod == 'POST') {
 
             const tokenValidation = validateToken(event.headers.authorization);
@@ -18,6 +30,7 @@ exports.handler = async function (event, context) {
             if (tokenValidation.grant != 'admin') {
                 return {
                     statusCode: 401,
+                    headers
                 }
             }
             const { username, password, email, fullName, contactNumber, organization, department, grant } = JSON.parse(event.body)
@@ -34,7 +47,8 @@ exports.handler = async function (event, context) {
             if (userExist) {
                 return {
                     statusCode: 400,
-                    body: JSON.stringify({ message: 'Username is already taken!' })
+                    body: JSON.stringify({ message: 'Username is already taken!' }),
+                    headers
                 }
             }
 
@@ -49,10 +63,12 @@ exports.handler = async function (event, context) {
                 valueInputOption: "USER_ENTERED",
                 resource: { values: [newRow] }
             });
-            const token = await jwt.sign({ username, email, fullName, contactNumber, organization, department, grant }, 'e8b87623-c9df-4609-a5d2-463c7efe4058', { expiresIn: "2h" });
+            const token = await jwt.sign({ username, email, fullName, contactNumber, organization, department, grant }, 'something', { expiresIn: "2h" });
             return {
                 statusCode: 201,
-                body: JSON.stringify({ message: 'User created!', token })
+                headers,
+                body: JSON.stringify({ message: 'User created!', token }),
+
             }
 
         }
@@ -60,10 +76,10 @@ exports.handler = async function (event, context) {
     catch (error) {
         return {
             statusCode: 500,
-            body: `Exception occured: ${error}`
+            body: `Exception occured: ${error}`,
+            headers
         }
     }
 
 };
-
 
