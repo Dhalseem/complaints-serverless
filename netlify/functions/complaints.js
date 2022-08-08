@@ -4,8 +4,8 @@ const jwt = require("jsonwebtoken");
 
 const headers = {
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Allow-Methods": "GET, POST",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Methods": "GET, POST, PUT",
     "content-type": "application/json",
 };
 exports.handler = async function (event, context) {
